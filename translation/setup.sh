@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 apt-get update
 apt-get install -y vim man wget unzip curl gnupg2 ca-certificates lsb-release apache2-utils ethtool wget build-essential zlib1g cmake pkg-config libglvnd-dev libegl1 libopenblas-dev liblapack-dev linux-headers-generic

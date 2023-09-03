@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 # Encode source file
 cat $1 | ./marian/build/spm_encode --model=./model/source.spm > $1.encoded
