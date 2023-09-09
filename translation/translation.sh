@@ -22,3 +22,6 @@ do
         -w 2500 \
         > ./translation/data/$1/$column.translated
 done
+
+# postprocess data
+python ./translation/postprocess_data.py $1 $2
