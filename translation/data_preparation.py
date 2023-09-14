@@ -16,6 +16,11 @@ dataset = datasets.load_dataset(args[1], split='train')
 
 columns = ['qid', 'question', 'response_j', 'response_k']
 
+# check if translation/data folder exists
+if not os.path.exists('translation/data'):
+    # make a new folder for the dataset
+    os.mkdir('translation/data')
+
 # make a new folder for the dataset
 os.mkdir(f'translation/data/{args[1]}')
 
