@@ -25,4 +25,4 @@ dataset = Dataset.from_dict(dataset_dict)
 dataset_dict = DatasetDict({'train': dataset})
 
 # push the dataset dict to the hub
-dataset_dict.push_to_hub(f'{args[2]}_translated')
+dataset_dict.push_to_hub(f'IndonesiaAI/{args[2]}_translated')
