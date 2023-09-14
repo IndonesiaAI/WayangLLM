@@ -3,7 +3,7 @@
 # Prepare data
 python ./translation/prepare_data.py $1
 
-for column in question response_j response_k
+for column in 'question response_j response_k';
 do
     # Encode data
     cat ./translation/data/$1/$column | ./marian/build/spm_encode \

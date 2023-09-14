@@ -26,8 +26,6 @@ os.mkdir(f'translation/data/{args[1]}')
 
 for column in columns:
     # save all text in the column as a file in the data folder
-    os.mkdir(f'translation/data/{args[1]}/{column}')
-
     with open(f'translation/data/{args[1]}/{column}', 'w', encoding='utf-8') as f:
         for text in dataset['train'][column]:
             f.write(text + '\n')
