@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Prepare data
-python ./translation/prepare_data.py $1
+python ./translation/data_preparation.py $1
 
-for column in 'question response_j response_k';
+for column in question response_j response_k;
 do
     # Encode data
     cat ./translation/data/$1/$column | ./marian/build/spm_encode \
@@ -24,4 +24,4 @@ do
 done
 
 # postprocess data
-python ./translation/postprocess_data.py $1 $2
+python ./translation/data_postprocess.py $1 $2

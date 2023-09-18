@@ -28,4 +28,12 @@ for column in columns:
     # save all text in the column as a file in the data folder
     with open(f'translation/data/{args[1]}/{column}', 'w', encoding='utf-8') as f:
         for text in dataset['train'][column]:
-            f.write(text + '\n')
+            f.write(str(text) + '\n')
+
+    # create new file with the same name and add .encoded to the end
+    with open(f'translation/data/{args[1]}/{column}.encoded', 'w', encoding='utf-8') as f:
+        f.write('')
+
+    # create new file with the same name and add .translated to the end
+    with open(f'translation/data/{args[1]}/{column}.translated', 'w', encoding='utf-8') as f:
+        f.write('')
