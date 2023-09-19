@@ -12,7 +12,7 @@ if len(args) > 2:
     raise Exception('Too many arguments')
 
 # load dataset
-dataset = datasets.load_dataset(args[1], split='train')
+dataset = datasets.load_dataset(f"IndonesiaAI/{args[1]}", split='train')
 
 columns = ['qid', 'question', 'response_j', 'response_k']
 
