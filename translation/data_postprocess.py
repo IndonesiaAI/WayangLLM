@@ -11,12 +11,32 @@ dataset_dict = {
     'response_k': []
 }
 
-for column in dataset_dict.keys():
+with open(f'./translation/data/{args[1]}/qid', 'r') as f:
+    data = f.read().splitlines()
+
+dataset_dict['qid'] = data
+
+for column in dataset_dict.keys()[1:]:
     # read data from file and save as a list
-    with open(f'./translation/data/{args[1]}/{column}.translated', 'r') as f:
+    with open(f'./translation/data/{args[1]}/{column}/translated', 'r') as f:
         data = f.read().splitlines()
 
-    dataset_dict[column] = data
+        with open(f'./translation/data/{args[1]}/{column}/qid', 'r') as qid:
+            qid = qid.read().splitlines()
+            
+        # iterate through each dataset_dict['qid'] and
+        # find all the data in zip(data, qid) that has the same qid
+        # then combine the data into a string and save it to dataset_dict[column]
+        index = 0
+        for qid_ in dataset_dict['qid']:
+            temp = ""
+            for i in range(index, len(qid)):
+                if qid[i] == qid_:
+                    temp += data[i] + ' '
+                else:
+                    index = i
+                    break
+            dataset_dict[column].append(temp)
 
 # create a dataset from the dictionary
 dataset = Dataset.from_dict(dataset_dict)

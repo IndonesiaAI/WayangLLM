@@ -25,6 +25,7 @@ model = MarianMTModel.from_pretrained(model_name)
 
 # load model to gpu
 model.to('cuda')
+tokenizer.to('cuda')
 
 print('loading dataset...')
 print('')
@@ -48,6 +49,22 @@ def translate_batch(batch, column_name: str):
     batch[column_name] = tgt_text
     return batch
 
+def translate(sample, column_name:str):
+    # Tokenize input
+    src_text = sample[column_name]
+    # split the text inside the list by each sentence
+    src_text = src_text.split('.')
+    # tokenize the text
+    sample_tokenized = tokenizer(src_text, return_tensors="pt")
+    sample_tokenized.to('cuda')
+
+    # Translate
+    gen = model.generate(**sample_tokenized)
+    tgt_text = tokenizer.decode(gen, skip_special_tokens=True)
+
+    sample[column_name] = tgt_text
+    return sample
+
 print('Translating...')
 print('---------------------------------')
 
@@ -55,17 +72,17 @@ print('Translating question...')
 print('')
 
 # Translate
-dataset['train']['question'] = dataset['train']['question'].apply(lambda batch: translate_batch(batch, 'question'), batched=True, batch_size=args[2])
+dataset['train']['question'] = dataset['train'].apply(lambda sample: translate_batch(sample, 'question'))
 
 print('Translating response_j...')
 print('')
 
-dataset['train']['response_j'] = dataset['train']['response_j'].apply(lambda batch: translate_batch(batch, 'response_j'), batched=True, batch_size=args[2])
+dataset['train']['response_j'] = dataset['train'].apply(lambda sample: translate_batch(sample, 'response_j'))
 
 print('Translating response_k...')
 print('')
 
-dataset['train']['response_k'] = dataset['train']['response_k'].apply(lambda batch: translate_batch(batch, 'response_k'), batched=True, batch_size=args[2])
+dataset['train']['response_k'] = dataset['train'].apply(lambda sample: translate_batch(sample, 'response_k'))
 
 print('Pushing dataset...')
 print('')

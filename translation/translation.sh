@@ -17,7 +17,7 @@ do
         -b 6 \
         --normalize 0.6 \
         --mini-batch 64 \
-        --maxi-batch-sort \
+        --maxi-batch-sort src \
         --maxi-batch 100 \
         -w 2500 \
         > ./translation/data/$1/$column.translated
