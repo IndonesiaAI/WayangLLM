@@ -45,41 +45,16 @@ def clean_text(text):
 for column in columns:
     os.mkdir(f'translation/data/{args[1]}/{column}')
     
-    raw_data = [clean_text(text) for text in tqdm(dataset['question'], desc="Processing raw data")]
-    raw_data = list(itertools.chain(*raw_data))
-    qid_data = [(str(dataset['qid'][i])) * len(str(text).split('\n')) for i, text in enumerate(dataset[column])]
+    raw_data, qid_data = [], []
+    for question_, qid_ in tqdm(zip(dataset['question'], dataset['qid']), desc="Processing raw data"):
+        raw_data += clean_text(question_)
+        qid_data += [qid_] * len(raw_data[-1])
 
     df = pd.DataFrame({column: raw_data})
     df.to_csv(f'translation/data/{args[1]}/{column}/raw', index=False, header=False, sep='\n')
 
     df = pd.DataFrame({'qid': qid_data})
     df.to_csv(f'translation/data/{args[1]}/{column}/qid', index=False, header=False, sep='\n')
-
-    # with open(f'translation/data/{args[1]}/{column}/raw', 'w', encoding='utf-8') as f:
-    #     # write text in the dataset in batch
-    #     for texts in tqdm(raw_data/1000, desc="Writing raw data"):
-    #         f.writelines(texts)
-    # with open(f'translation/data/{args[1]}/{column}/qid', 'w', encoding='utf-8') as qid:
-    #     # write qid in the dataset in batch
-    #     for qids in tqdm(qid_data/1000, desc="Writing qid data"):
-    #         qid.writelines(qids)
-
-    # with open(f'translation/data/{args[1]}/{column}/raw', 'w', encoding='utf-8') as f, \
-    #     open(f'translation/data/{args[1]}/{column}/qid', 'w', encoding='utf-8') as qid:
-    #     for i, text in tqdm(enumerate(dataset[column]), total=len(dataset[column]), desc="Processing raw data"):
-    #         cleaned_text = clean_text(text)
-    #         f.write(cleaned_text + '\n')
-    #         qid_data = str(dataset['qid'][i]) * len(str(text).split('\n'))
-    #         qid.write(qid_data + '\n')
-
-    # save all text in the column as a file in the data folder
-    # with open(f'translation/data/{args[1]}/{column}/raw', 'w', encoding='utf-8') as f, \
-    #     open(f'translation/data/{args[1]}/{column}/qid', 'w', encoding='utf-8') as qid:
-    #         # write text in the dataset column to the f and 'qid' column to qid,
-    #         # but split the text by new line
-    #         for i, text in tqdm(enumerate(dataset[column])):
-    #             f.write(clean_text(text) + '\n')
-    #             qid.write((str(dataset['qid'][i]) + '\n') * len(str(text).split('\n')))
 
     # create new file with the same name and add .encoded to the end
     with open(f'translation/data/{args[1]}/{column}/encoded', 'w', encoding='utf-8') as f:
