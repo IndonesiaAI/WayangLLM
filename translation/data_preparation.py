@@ -29,16 +29,18 @@ if not os.path.exists('translation/data'):
 # make a new folder for the dataset
 os.mkdir(f'translation/data/{args[1]}')
 
-with open(f'translation/data/{args[1]}/qid', 'w', encoding='utf-8') as f:
-    for qid in dataset['qid']:
-        f.write(str(qid) + '\n')
-
 def clean_text(text) -> list:
-    return nltk.sent_tokenize(text)
+    text = text.replace('\n', '[ENT]')
+    sentences = nltk.sent_tokenize(text)
+    # split sentences with : ! ? ,
+    sentences = [
+        re.sub(r'([,:!?])', r'\\1[CUT]', sentence).split('[CUT]')
+        for sentence in sentences]
+    return sentences
 
 for column in columns:
     os.mkdir(f'translation/data/{args[1]}/{column}')
-    
+
     raw_data, qid_data = [], []
     for text_, qid_ in tqdm(zip(dataset[column], dataset['qid']), desc="Processing raw data"):
         cleaned = clean_text(text_)
@@ -58,3 +60,8 @@ for column in columns:
     # create new file with the same name and add .translated to the end
     with open(f'translation/data/{args[1]}/{column}/translated', 'w', encoding='utf-8') as f:
         f.write('')
+
+
+with open(f'translation/data/{args[1]}/qid', 'w', encoding='utf-8') as f:
+    for qid in dataset['qid']:
+        f.write(str(qid) + '\n')
