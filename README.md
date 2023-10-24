@@ -17,5 +17,5 @@ Note: change `part-id` to access different splits.
 ### ST Pairs Refinement
 1. **QID Matching**: Matches QIDs in ST pairs.
 2. **Language Source Exclusion**: Filters out data from specific StackExchange communities based on a given list. For reference, check [StackExchange Sites](https://stackexchange.com/sites).
-3. **Further Cleaning**: Additional regex-based cleaning to remove math (`$...$`) and code (```...```) elements.
+3. **Further Cleaning**: Additional regex-based cleaning to remove math (`$...$`) and code elements.
    
