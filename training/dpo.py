@@ -170,6 +170,7 @@ if __name__ == "__main__":
         save_steps=script_args.save_steps,
         gradient_accumulation_steps=script_args.gradient_accumulation_steps,
         gradient_checkpointing=script_args.gradient_checkpointing,
+        ddp_find_unused_parameters=False,
         learning_rate=script_args.learning_rate,
         evaluation_strategy="steps",
         eval_steps=script_args.eval_steps,
