@@ -103,7 +103,7 @@ def create_datasets(tokenizer, args):
         args.dataset_name,
         data_dir=args.subset,
         split=args.split,
-        use_auth_token=True,
+        token=True,
         num_proc=args.num_workers if not args.streaming else None,
         streaming=args.streaming,
     )
@@ -186,6 +186,8 @@ training_args = TrainingArguments(
     bf16=True,
     remove_unused_columns=False,
     run_name="sft_llama2",
+    ddp_find_unused_parameters=False,
+    gradient_checkpointing=script_args.gradient_checkpointing
 )
 
 train_dataset, eval_dataset = create_datasets(tokenizer, script_args)
