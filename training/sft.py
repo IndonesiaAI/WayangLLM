@@ -192,13 +192,15 @@ training_args = TrainingArguments(
 
 train_dataset, eval_dataset = create_datasets(tokenizer, script_args)
 
+print_trainable_parameters(base_model)
+
 trainer = SFTTrainer(
     model=base_model,
     train_dataset=train_dataset,
     eval_dataset=eval_dataset,
     peft_config=peft_config,
     packing=script_args.packing,
-    max_seq_length=None,
+    max_seq_length=4096,
     tokenizer=tokenizer,
     args=training_args,
 )
