@@ -94,7 +94,7 @@ def get_stack_exchange_paired(
       "Question: " + <prompt> + "\n\nAnswer: "
     """
     dataset = load_dataset(
-        "lvwerra/stack-exchange-paired",
+        "IndonesiaAI/combined-final-dataset",
         split="train",
         cache_dir=cache_dir,
         data_dir=data_dir,
