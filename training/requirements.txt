@@ -5,3 +5,4 @@ accelerate
 datasets
 bitsandbytes
 wandb
+flash-attn
