@@ -199,7 +199,7 @@ trainer = SFTTrainer(
     eval_dataset=eval_dataset,
     peft_config=peft_config,
     packing=script_args.packing,
-    max_seq_length=4096,
+    max_seq_length=None,
     tokenizer=tokenizer,
     args=training_args,
 )
