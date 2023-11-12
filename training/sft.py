@@ -4,12 +4,11 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import torch
-import tyro
 from accelerate import Accelerator
 from datasets import load_dataset
 from peft import AutoPeftModelForCausalLM, LoraConfig
 from tqdm import tqdm
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments, HfArgumentParser
 
 from trl import SFTTrainer
 from trl.import_utils import is_xpu_available
@@ -28,54 +27,40 @@ class ScriptArguments:
     shuffle_buffer: Optional[int] = field(default=5000, metadata={"help": "the shuffle buffer size"})
     seq_length: Optional[int] = field(default=1024, metadata={"help": "the sequence length"})
     num_workers: Optional[int] = field(default=4, metadata={"help": "the number of workers"})
-
-    training_args: TrainingArguments = field(
-        default_factory=lambda: TrainingArguments(
-            output_dir="./results",
-            max_steps=500,
-            logging_steps=10,
-            save_steps=10,
-            per_device_train_batch_size=4,
-            per_device_eval_batch_size=1,
-            gradient_accumulation_steps=2,
-            gradient_checkpointing=False,
-            group_by_length=False,
-            learning_rate=1e-4,
-            lr_scheduler_type="cosine",
-            warmup_steps=100,
-            weight_decay=0.05,
-            optim="paged_adamw_32bit",
-            bf16=True,
-            remove_unused_columns=False,
-            run_name="sft_llama2",
-            report_to="wandb",
-        )
-    )
-
     packing: Optional[bool] = field(default=True, metadata={"help": "whether to use packing for SFTTrainer"})
 
-    peft_config: LoraConfig = field(
-        default_factory=lambda: LoraConfig(
-            r=8,
-            lora_alpha=16,
-            lora_dropout=0.05,
-            target_modules=["q_proj", "v_proj"],
-            bias="none",
-            task_type="CAUSAL_LM",
-        )
-    )
+parser = HfArgumentParser(ScriptArguments)
+script_args = parser.parse_args_into_dataclasses()[0]
 
+training_args = TrainingArguments(
+        output_dir="./results",
+        max_steps=500,
+        logging_steps=10,
+        save_steps=10,
+        per_device_train_batch_size=4,
+        per_device_eval_batch_size=1,
+        gradient_accumulation_steps=2,
+        gradient_checkpointing=False,
+        group_by_length=False,
+        learning_rate=1e-4,
+        lr_scheduler_type="cosine",
+        warmup_steps=100,
+        weight_decay=0.05,
+        optim="paged_adamw_32bit",
+        bf16=True,
+        remove_unused_columns=False,
+        run_name="sft_llama2",
+        report_to="wandb",
+)
 
-script_args = tyro.cli(ScriptArguments)
-
-if script_args.training_args.group_by_length and script_args.packing:
-    raise ValueError("Cannot use both packing and group by length")
-
-# `gradient_checkpointing` was True by default until `1f3314`, but it's actually not used.
-# `gradient_checkpointing=True` will cause `Variable._execution_engine.run_backward`.
-if script_args.training_args.gradient_checkpointing:
-    raise ValueError("gradient_checkpointing not supported")
-
+peft_config = LoraConfig(
+    r=8,
+    lora_alpha=16,
+    lora_dropout=0.05,
+    target_modules=["q_proj", "v_proj"],
+    bias="none",
+    task_type="CAUSAL_LM",
+)
 
 def chars_token_ratio(dataset, tokenizer, nb_examples=400):
     """
