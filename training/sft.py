@@ -153,6 +153,7 @@ base_model = AutoModelForCausalLM.from_pretrained(
     device_map={"": Accelerator().local_process_index},
     trust_remote_code=True,
     use_auth_token=True,
+    use_flash_attention_2=True
 )
 base_model.config.use_cache = False
 
