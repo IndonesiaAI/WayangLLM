@@ -156,13 +156,9 @@ base_model = AutoModelForCausalLM.from_pretrained(
 )
 base_model.config.use_cache = False
 
-peft_config = script_args.peft_config
-
 tokenizer = AutoTokenizer.from_pretrained(script_args.model_name, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "right"  # Fix weird overflow issue with fp16 training
-
-training_args = script_args.training_args
 
 train_dataset, eval_dataset = create_datasets(tokenizer, script_args)
 
